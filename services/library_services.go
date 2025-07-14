@@ -70,7 +70,7 @@ func (l *Library) RemoveMember(memberID int) error {
 	// the borrowed books by the member ID
 	for _, book := range member.BorrowedBooks {
 		if b, ok := l.Books[book.ID]; ok {
-			b.Status = "Available"
+			b.Status = models.Available
 		}
 	}
 
@@ -93,7 +93,7 @@ func (l *Library) RemoveBook(bookID int) {
 	}
 	// Before removing the book, if the book was borrowed
 	// make the member return the book
-	if book.Status != "Available" {
+	if book.Status != models.Available {
 		for _, member := range l.Members {
 			err := l.ReturnBook(bookID, member.ID)
 			if err == nil {
@@ -117,12 +117,12 @@ func (l *Library) BorrowBook(bookID int, memberID int) error {
 	}
 
 	// Book is not available
-	if book.Status != "Available" {
+	if book.Status != models.Available {
 		return fmt.Errorf("book %s is not available", book.Title)
 	}
 
 	// set the status to Borrowed
-	book.Status = "Borrowed"
+	book.Status = models.Borrowed
 	member.BorrowedBooks = append(member.BorrowedBooks, *book)
 	return nil
 }
@@ -139,7 +139,7 @@ func (l *Library) ReturnBook(bookID int, memberID int) error {
 		return fmt.Errorf("member with id %d not found", memberID)
 	}
 
-	if book.Status == "Available" {
+	if book.Status == models.Available {
 		return fmt.Errorf("book %s is not borrowed", book.Title)
 	}
 
@@ -159,7 +159,7 @@ func (l *Library) ReturnBook(bookID int, memberID int) error {
 	}
 
 	// Set the book to Available
-	book.Status = "Available"
+	book.Status = models.Available
 	member.BorrowedBooks = slices.Delete(member.BorrowedBooks, idx, idx+1)
 
 	return nil
@@ -178,7 +178,7 @@ func (l *Library) ListAvailableBooks() []models.Book {
 	// Iterate over all the books and
 	// accumulate available books
 	for _, book := range l.Books {
-		if book.Status == "Available" {
+		if book.Status == models.Available {
 			availableBooks = append(availableBooks, *book)
 		}
 	}

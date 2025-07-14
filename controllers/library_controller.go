@@ -187,7 +187,7 @@ func AddBook(l services.LibraryManager) {
 	book.Author = author
 
 	// set the status Available initially
-	book.Status = "Available"
+	book.Status = models.Available
 	bookCount += 1
 	book.ID = bookCount
 
